@@ -293,3 +293,38 @@ func TestEmbeddedStructForCustomizedNamingStrategy(t *testing.T) {
 		})
 	}
 }
+
+func TestParseInterfaceSchema(t *testing.T) {
+	userHuman, err := schema.Parse(tests.Human(&tests.User{}), &sync.Map{}, schema.NamingStrategy{})
+	if err != nil {
+		t.Fatalf("failed to parse userHuman, got error %v", err)
+	}
+
+	checkUserSchema(t, userHuman)
+}
+
+func TestParseListOfInterfacesSchema(t *testing.T) {
+	arr := []tests.Human{
+		tests.Human(&tests.User{}),
+		tests.Human(&tests.User{}),
+	}
+	userHuman, err := schema.Parse(arr, &sync.Map{}, schema.NamingStrategy{})
+	if err != nil {
+		t.Fatalf("failed to parse userHuman, got error %v", err)
+	}
+
+	checkUserSchema(t, userHuman)
+}
+
+func TestParseInterfaceOfListSchema(t *testing.T) {
+	arr := []*tests.User{
+		&tests.User{},
+		&tests.User{},
+	}
+	userHuman, err := schema.Parse(interface{}(arr), &sync.Map{}, schema.NamingStrategy{})
+	if err != nil {
+		t.Fatalf("failed to parse userHuman, got error %v", err)
+	}
+
+	checkUserSchema(t, userHuman)
+}
